@@ -83,8 +83,11 @@ QPromise<void> DocEngine::read(QFile *file, QSharedPointer<Editor> editor, QText
     if (decoded.error)
         return QPromise<void>::reject(0);
 
-    editor->setCodec(decoded.codec);
-    editor->setBom(decoded.bom);
+    // Override the detection BS with blanket UTF-8 behavior
+    editor->setCodec(QTextCodec::codecForName("UTF-8"));
+    editor->setBom(false);
+    // editor->setCodec(decoded.codec);
+    // editor->setBom(decoded.bom);
 
     if (decoded.text.indexOf("\r\n") != -1)
         editor->setEndOfLineSequence("\r\n");
